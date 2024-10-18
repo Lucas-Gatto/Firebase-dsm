@@ -35,6 +35,36 @@ app.post('/cadastrar', function(req,res){
     })
 })
 
+app.get('/consultar', function(req,res){
+    var posts = []
+    db.collection('Clientes').get().then(
+        function(snapshot){
+            snapshot.forEach(
+                function(doc){
+                    const data = doc.data()
+                    data.id = doc.id //forçando o campo a existir
+                    //console.log(doc.data())
+                    posts.push(data)
+                }
+            )
+            res.render("consulta", {posts: posts})
+        }
+    )
+})
+
+app.get('/editar/:id', function(req,res){
+    var posts = []
+    const id = req.params.id
+    const clientes = db.collection('Clientes').doc(id).get().then(
+        function(doc){
+            const data = doc.data()
+            data.id = doc.id
+            posts.push(data)
+            res.render("editar", {posts: posts})
+        }
+    )
+})
+
 app.listen(8081, function(){
     console.log("Servidor Ativo!")
 })
